@@ -1,7 +1,7 @@
 package com.wangz.model.pojo;
 
 
-import com.imooc.commons.model.base.BaseModel;
+import com.wangz.model.base.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 
