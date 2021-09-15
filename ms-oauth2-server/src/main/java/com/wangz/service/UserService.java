@@ -1,10 +1,10 @@
 package com.wangz.service;
 
 import com.wangz.mapper.DinnerMapper;
+import com.wangz.model.domain.SignInIdentity;
 import com.wangz.model.pojo.Diners;
 import com.wangz.utils.AssertUtil;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +25,10 @@ public class UserService implements UserDetailsService {
         if (diners == null){
             throw new UsernameNotFoundException("用户名或密码错误，请重新输入");
         }
-        return new User(username, diners.getPassword(),
-                AuthorityUtils.commaSeparatedStringToAuthorityList(diners.getRoles()));
+        // 初始化登录认证对象
+        SignInIdentity signInIdentity = new SignInIdentity();
+        // 拷贝属性
+        BeanUtils.copyProperties(diners, signInIdentity);
+        return signInIdentity;
     }
 }

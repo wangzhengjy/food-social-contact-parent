@@ -83,19 +83,17 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 // 具体登录的方法
                 .userDetailsService(userService)
                 // token 存储的方式：Redis
-                .tokenStore(redisTokenStore);
+                .tokenStore(redisTokenStore)
         // 令牌增强对象，增强返回的结果
-//                .tokenEnhancer((accessToken, authentication) -> {
-//                    // 获取登录用户的信息，然后设置
-//                    SignInIdentity signInIdentity = (SignInIdentity) authentication.getPrincipal();
-//                    LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-//                    map.put("nickname", signInIdentity.getNickname());
-//                    map.put("avatarUrl", signInIdentity.getAvatarUrl());
-//                    DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) accessToken;
-//                    token.setAdditionalInformation(map);
-//                    return token;
-//                });
-//    }
+                .tokenEnhancer((accessToken, authentication) -> {
+                    // 获取登录用户的信息，然后设置
+                    SignInIdentity signInIdentity = (SignInIdentity) authentication.getPrincipal();
+                    LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                    map.put("nickname", signInIdentity.getNickname());
+                    map.put("avatarUrl", signInIdentity.getAvatarUrl());
+                    DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) accessToken;
+                    token.setAdditionalInformation(map);
+                    return token;
+                });
     }
-
 }
