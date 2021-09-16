@@ -37,7 +37,7 @@ public class UserController {
         BeanUtils.copyProperties(signInIdentity, dinerInfo);
         return ResultInfoUtil.buildSuccess(request.getServletPath(), dinerInfo);
     }
-
+//http://localhost:8082/user/me?access_token=c3af1cfe-3495-4ae8-bb8d-5700d6213a3c
     /**
      * 安全退出
      *
