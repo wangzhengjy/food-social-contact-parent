@@ -19,7 +19,7 @@ spring:
     password: 123456
   # swagger
   swagger:
-    base-package: com.imooc.oauth2
+    base-package: com.wangz.oauth2
     title: 慕课美食社交食客API接口文档
 
 # Oauth2
