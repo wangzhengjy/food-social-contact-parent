@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 客户端配置类
+ * 客户端配置类  配置文件中的Oauth2配置
  */
 @Component
 @ConfigurationProperties(prefix = "client.oauth2")

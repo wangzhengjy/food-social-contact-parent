@@ -80,7 +80,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         // 认证器
         endpoints.authenticationManager(authenticationManager)
-                // 具体登录的方法
+                // 具体登录的方法逻辑 ，
                 .userDetailsService(userService)
                 // token 存储的方式：Redis
                 .tokenStore(redisTokenStore)
