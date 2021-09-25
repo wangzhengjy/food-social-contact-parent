@@ -17,6 +17,7 @@ spring:
           predicates:
             - Path=/diners/**
           filters:
+            #只匹配路由后半部分
             - StripPrefix=1
 
         - id: ms-oauth2-server

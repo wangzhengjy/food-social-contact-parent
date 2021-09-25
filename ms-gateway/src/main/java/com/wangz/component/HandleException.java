@@ -18,6 +18,9 @@ import reactor.core.publisher.Mono;
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
 
+/**
+ * 集中返回处理
+ */
 @Component
 public class HandleException {
 
