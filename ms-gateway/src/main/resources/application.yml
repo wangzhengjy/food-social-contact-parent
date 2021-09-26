@@ -92,7 +92,7 @@ secure:
       - /actuator/**
       - /auth/oauth/**
       - /diners/signin
-#      - /diners/send
+      - /diners/send
 #      - /diners/checkPhone
 #      - /diners/register
 #      - /seckill/add
