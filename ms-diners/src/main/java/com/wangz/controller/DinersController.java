@@ -32,10 +32,10 @@ public class DinersController {
      * @param dinersDTO
      * @return
      */
-//    @PostMapping("register")
-//    public ResultInfo register(@RequestBody DinersDTO dinersDTO) {
-//        return dinersService.register(dinersDTO, request.getServletPath());
-//    }
+    @PostMapping("register")
+    public ResultInfo register(@RequestBody DinersDTO dinersDTO) {
+        return dinersService.register(dinersDTO, request.getServletPath());
+    }
 
     /**
      * 校验手机号是否已注册
@@ -43,11 +43,11 @@ public class DinersController {
      * @param phone
      * @return
      */
-//    @GetMapping("checkPhone")
-//    public ResultInfo checkPhone(String phone) {
-//        dinersService.checkPhoneIsRegistered(phone);
-//        return ResultInfoUtil.buildSuccess(request.getServletPath());
-//    }
+    @GetMapping("checkPhone")
+    public ResultInfo checkPhone(String phone) {
+        dinersService.checkPhoneIsRegistered(phone);
+        return ResultInfoUtil.buildSuccess(request.getServletPath());
+    }
 
     /**
      * 登录
