@@ -27,12 +27,12 @@ spring:
           filters:
             - StripPrefix=1
 
-#        - id: ms-seckill
-#          uri: lb://ms-seckill
-#          predicates:
-#            - Path=/seckill/**
-#          filters:
-#            - StripPrefix=1
+        - id: ms-seckill
+          uri: lb://ms-seckill
+          predicates:
+            - Path=/seckill/**
+          filters:
+            - StripPrefix=1
 #
 #        - id: ms-follow
 #          uri: lb://ms-follow
@@ -95,7 +95,7 @@ secure:
       - /diners/send
       - /diners/checkPhone
       - /diners/register
-#      - /seckill/add
+      - /seckill/add
 
 # 配置 Eureka Server 注册中心
 eureka:
