@@ -36,8 +36,6 @@ public class SeckillService {
     private String oauthServerName;
     @Resource
     private RestTemplate restTemplate;
-    @Resource
-    private DefaultRedisScript defaultRedisScript;
 
     /**
      * 抢购代金券
