@@ -17,6 +17,7 @@ import com.wangz.mapper.SeckillVouchersMapper;
 
 import com.wangz.utils.ResultInfoUtil;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -49,6 +50,8 @@ public class SeckillService {
     private DefaultRedisScript defaultRedisScript;
     @Resource
     private RedisLock redisLock;
+    @Resource
+    private RedissonClient redissonClient;
     /**
      * 抢购代金券
      *
@@ -108,24 +111,22 @@ public class SeckillService {
         long expireTime = seckillVouchers.getEndTime().getTime() - now.getTime();
 
         // 自定义 Redis 分布式锁
-        String lockKey = redisLock.tryLock(lockName, expireTime);
+        //String lockKey = redisLock.tryLock(lockName, expireTime);
 
         // Redisson 分布式锁
-//        RLock lock = redissonClient.getLock(lockName);
+        RLock lock = redissonClient.getLock(lockName);
         //下单
         try {
-
-            // Redisson 分布式锁处理
-            //boolean isLocked = lock.tryLock(expireTime, TimeUnit.MILLISECONDS);
-
             // 不为空意味着拿到锁了，执行下单
             // 自定义 Redis 分布式锁处理
-            if (StrUtil.isNotBlank(lockKey)) {
-                // if (StrUtil.isNotBlank(lockKey)) {
+            //if (StrUtil.isNotBlank(lockKey)) {
+            // Redisson 分布式锁处理
+            boolean isLocked = lock.tryLock(expireTime, TimeUnit.MILLISECONDS);
+            if (isLocked) {
                 VoucherOrders voucherOrders = new VoucherOrders();
                 voucherOrders.setFkDinerId(dinerInfo.getId());
-// Redis 中不需要维护外键信息
-//          voucherOrders.setFkSeckillId(seckillVouchers.getId());
+                // Redis 中不需要维护外键信息
+       //       voucherOrders.setFkSeckillId(seckillVouchers.getId());
                 voucherOrders.setFkVoucherId(seckillVouchers.getFkVoucherId());
                 String orderNo = IdUtil.getSnowflake(1, 1).nextIdStr();
                 voucherOrders.setOrderNo(orderNo);
@@ -152,7 +153,7 @@ public class SeckillService {
             // redisLock.unlock(lockName, lockKey);
 
             // Redisson 解锁
-            redisLock.unlock(lockName, lockKey);
+            lock.unlock();
             if (e instanceof ParameterException) {
                 return ResultInfoUtil.buildError(0, "该券已经卖完了", path);
             }
