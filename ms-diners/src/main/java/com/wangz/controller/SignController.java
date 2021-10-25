@@ -47,5 +47,17 @@ public class SignController {
         Long count = signService.getSignCount(access_token, date);
         return ResultInfoUtil.buildSuccess(request.getServletPath(), count);
     }
+    /**
+     * 获取用户签到情况 默认当月
+     *
+     * @param access_token
+     * @param dateStr
+     * @return
+     */
+    @GetMapping
+    public ResultInfo getSignInfo(String access_token, String dateStr) {
+        Map<String, Boolean> map = signService.getSignInfo(access_token, dateStr);
+        return ResultInfoUtil.buildSuccess(request.getServletPath(), map);
+    }
 
 }

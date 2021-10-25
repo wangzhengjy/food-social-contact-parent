@@ -3,6 +3,7 @@ package com.wangz.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wangz.constant.ApiConstant;
 import com.wangz.exception.ParameterException;
@@ -17,9 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class SignService {
@@ -76,7 +76,47 @@ public class SignService {
                 (RedisCallback<Long>) con -> con.bitCount(signKey.getBytes())
         );
     }
-
+    /**
+     * 获取当月签到情况
+     *
+     * @param accessToken
+     * @param dateStr
+     * @return
+     */
+    public Map<String, Boolean> getSignInfo(String accessToken, String dateStr) {
+        // 获取登录用户信息
+        SignInDinerInfo dinerInfo = loadSignInDinerInfo(accessToken);
+        // 获取日期
+        Date date = getDate(dateStr);
+        // 构建 Key
+        String signKey = buildSignKey(dinerInfo.getId(), date);
+        // 构建一个自动排序的 Map
+        Map<String, Boolean> signInfo = new TreeMap<>();
+        // 获取某月的总天数（考虑闰年）
+        int dayOfMonth = DateUtil.lengthOfMonth(DateUtil.month(date) + 1,
+                DateUtil.isLeapYear(DateUtil.year(date)));
+        // bitfield user:sign:5:202011 u30 0
+        BitFieldSubCommands bitFieldSubCommands = BitFieldSubCommands.create()
+                .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth))
+                .valueAt(0);
+        List<Long> list = redisTemplate.opsForValue().bitField(signKey, bitFieldSubCommands);
+        if (list == null || list.isEmpty()) {
+            return signInfo;
+        }
+        long v = list.get(0) == null ? 0 : list.get(0);
+        // 从低位到高位进行遍历，为 0 表示未签到，为 1 表示已签到
+        for (int i = dayOfMonth; i > 0; i--) {
+            /*
+                签到：  yyyy-MM-01 true
+                未签到：yyyy-MM-01 false
+             */
+            LocalDateTime localDateTime = LocalDateTimeUtil.of(date).withDayOfMonth(i);
+            boolean flag = v >> 1 << 1 != v;
+            signInfo.put(DateUtil.format(localDateTime, "yyyy-MM-dd"), flag);
+            v >>= 1;
+        }
+        return signInfo;
+    }
     /**
      * 统计连续签到的次数
      *
