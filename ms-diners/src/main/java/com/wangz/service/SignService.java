@@ -11,6 +11,7 @@ import com.wangz.model.vo.SignInDinerInfo;
 import com.wangz.utils.AssertUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -55,6 +56,25 @@ public class SignService {
         // 统计连续签到的次数
         int count = getContinuousSignCount(dinerInfo.getId(), date);
         return count;
+    }
+    /**
+     * 获取用户签到次数
+     *
+     * @param accessToken
+     * @param dateStr
+     * @return
+     */
+    public long getSignCount(String accessToken, String dateStr) {
+        // 获取登录用户信息
+        SignInDinerInfo dinerInfo = loadSignInDinerInfo(accessToken);
+        // 获取日期
+        Date date = getDate(dateStr);
+        // 构建 Key
+        String signKey = buildSignKey(dinerInfo.getId(), date);
+        // e.g. BITCOUNT user:sign:5:202011
+        return (Long) redisTemplate.execute(
+                (RedisCallback<Long>) con -> con.bitCount(signKey.getBytes())
+        );
     }
 
     /**
