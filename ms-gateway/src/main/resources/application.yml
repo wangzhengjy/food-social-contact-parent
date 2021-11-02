@@ -48,15 +48,12 @@ spring:
 #          filters:
 #            - StripPrefix=1
 #
-#        - id: ms-points
-#          uri: lb://ms-points
-#          predicates:
-#            - Path=/points/**
-
-
-
-#          filters:
-#            - StripPrefix=1
+        - id: ms-points
+          uri: lb://ms-points
+          predicates:
+            - Path=/points/**
+          filters:
+            - StripPrefix=1
 #
 #        - id: ms-oauth2-server
 #          uri: lb://ms-oauth2-server

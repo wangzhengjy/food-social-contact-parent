@@ -1,10 +1,10 @@
 server:
-  port: 8081 # 端口
+  port: 8086 # 端口
 
 spring:
   application:
-    name: ms-diners # 应用名
-#  # 数据库
+    name: ms-points # 应用名
+  # 数据库
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -17,24 +17,11 @@ spring:
     timeout: 10000
     database: 1
     password: 123456
-  # swagger
+  # Swagger
   swagger:
-    base-package: com.wangz.diners
+    base-package: com.imooc.points
     title: 慕课美食社交食客API接口文档
 
-# Oauth2 客户端信息
-oauth2:
-  client:
-    client-id: appId
-    secret: 123456
-    grant_type: password
-    scope: api
-
-# oauth2 服务地址
-service:
-  name:
-    ms-oauth-server: http://ms-oauth2-server/
-    ms-points-server: http://ms-points/
 
 # 配置 Eureka Server 注册中心
 eureka:
@@ -44,12 +31,15 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8080/eureka/
+service:
+  name:
+    ms-oauth-server: http://ms-oauth2-server/
+    ms-diners-server: http://ms-diners/
 
-# Mybatis
 mybatis:
   configuration:
     map-underscore-to-camel-case: true # 开启驼峰映射
 
 logging:
   pattern:
-    console: '%d{HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
+    console: '%d{2100-01-01 13:14:00.666} [%thread] %-5level %logger{50} - %msg%n'
