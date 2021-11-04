@@ -52,6 +52,18 @@ public class DinerPointsController {
         return ResultInfoUtil.buildSuccess(request.getServletPath(), ranks);
     }
 
+    /**
+     * 查询前 20 积分排行榜，同时显示用户排名 -- Redis
+     *
+     * @param access_token
+     * @return
+     */
+    @GetMapping("redis")
+    public ResultInfo findDinerPointsRankFromRedis(String access_token) {
+        List<DinerPointsRankVO> ranks = dinerPointsService.findDinerPointRankFromRedis(access_token);
+        return ResultInfoUtil.buildSuccess(request.getServletPath(), ranks);
+    }
+
 
 
 }

@@ -9,6 +9,7 @@ import com.wangz.mapper.DinersMapper;
 import com.wangz.model.domain.ResultInfo;
 import com.wangz.model.dto.DinersDTO;
 import com.wangz.model.pojo.Diners;
+import com.wangz.model.vo.ShortDinerInfo;
 import com.wangz.utils.AssertUtil;
 import com.wangz.utils.ResultInfoUtil;
 import com.wangz.vo.LoginDinerInfo;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * 食客服务业务逻辑层
@@ -40,6 +42,18 @@ public class DinersService {
     @Resource
     private DinersMapper dinersMapper;
 
+    /**
+     * 根据 ids 查询食客信息
+     *
+     * @param ids 主键 id，多个以逗号分隔，逗号之间不用空格
+     * @return
+     */
+    public List<ShortDinerInfo> findByIds(String ids) {
+        AssertUtil.isNotEmpty(ids);
+        String[] idArr = ids.split(",");
+        List<ShortDinerInfo> dinerInfos = dinersMapper.findByIds(idArr);
+        return dinerInfos;
+    }
     /**
      * 用户注册
      *
