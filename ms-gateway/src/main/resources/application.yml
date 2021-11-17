@@ -101,7 +101,7 @@ secure:
       - /diners/checkPhone
       - /diners/register
       - /seckill/add
-      - /restaurants/**
+      - /restaurants/detail
 
 # 配置 Eureka Server 注册中心
 eureka:
