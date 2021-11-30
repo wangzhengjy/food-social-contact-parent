@@ -9,12 +9,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ms-points" />
         <module name="commons" />
-        <module name="ms-oauth2-server" />
+        <module name="ms-restaurants" />
         <module name="ms-seckill" />
         <module name="ms-diners" />
         <module name="ms-gateway" />
+        <module name="ms-follow" />
         <module name="ms-registry" />
-        <module name="ms-restaurants" />
+        <module name="ms-oauth2-server" />
       </profile>
     </annotationProcessing>
   </component>
