@@ -126,6 +126,47 @@ public class FollowService {
         redisTemplate.opsForSet().remove(RedisKeyConstant.followers.getKey() + followDinerId, dinerId);
     }
 
+    /**
+     * 共同关注列表
+     *
+     * @param dinerId
+     * @param accessToken
+     * @param path
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public ResultInfo findCommonsFriends(Integer dinerId, String accessToken, String path) {
+        // 是否选择了查看对象
+        AssertUtil.isTrue(dinerId == null || dinerId < 1,
+                "请选择要查看的人");
+        // 获取登录用户信息
+        SignInDinerInfo dinerInfo = loadSignInDinerInfo(accessToken);
+        // 获取登录用户的关注信息
+        String loginDinerKey = RedisKeyConstant.following.getKey() + dinerInfo.getId();
+        // 获取登录用户查看对象的关注信息
+        String dinerKey = RedisKeyConstant.following.getKey() + dinerId;
+        // 计算交集
+        Set<Integer> dinerIds = redisTemplate.opsForSet().intersect(loginDinerKey, dinerKey);
+        // 没有
+        if (dinerIds == null || dinerIds.isEmpty()) {
+            return ResultInfoUtil.buildSuccess(path, new ArrayList<ShortDinerInfo>());
+        }
+        // 调用食客服务根据 ids 查询食客信息
+        ResultInfo resultInfo = restTemplate.getForObject(dinersServerName + "findByIds?access_token={accessToken}&ids={ids}",
+                ResultInfo.class, accessToken, StrUtil.join(",", dinerIds));
+        if (resultInfo.getCode() != ApiConstant.SUCCESS_CODE) {
+            resultInfo.setPath(path);
+            return resultInfo;
+        }
+        // 处理结果集
+        List<LinkedHashMap> dinnerInfoMaps = (ArrayList) resultInfo.getData();
+        List<ShortDinerInfo> dinerInfos = dinnerInfoMaps.stream()
+                .map(diner -> BeanUtil.fillBeanWithMap(diner, new ShortDinerInfo(), true))
+                .collect(Collectors.toList());
+
+        return ResultInfoUtil.buildSuccess(path, dinerInfos);
+    }
+
 
     /**
      * 获取登录用户信息
